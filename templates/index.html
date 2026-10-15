@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bowling League Tracker</title>
+</head>
+<body>
+    <h1>Bowling League Tracker</h1>
+
+    <h2>Add a League</h2>
+
+    <form method="post">
+        <label for="name">League name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Add League</button>
+    </form>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <h2>Leagues</h2>
+
+    <ul>
+        {% for league in leagues %}
+            <li>{{ league.name }}</li>
+        {% else %}
+            <li>No leagues added yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
