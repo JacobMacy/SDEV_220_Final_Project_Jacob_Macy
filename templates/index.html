@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Bowling League Tracker</title>
-</head>
-<body>
-    <h1>Bowling League Tracker</h1>
+    <head>
+        <meta charset="UTF-8">
+        <title>Bowling League Tracker</title>
+    </head>
+    <body>
+        <h1>Bowling League Tracker</h1>
 
-    <h2>Add a League</h2>
+        <h2>Add a League</h2>
 
-    <form method="post">
-        <label for="name">League name:</label>
-        <input type="text" id="name" name="name" required>
-        <button type="submit">Add League</button>
-    </form>
+        <form action="{{ url_for('index') }}" method="post">
+            <label for="league-name">League name:</label>
+            <input type="text" id="league-name" name="name" required>
+            <button type="submit">Add League</button>
+        </form>
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+        {% if error %}
+            <p role="alert">{{ error }}</p>
+        {% endif %}
+        <h2>Leagues</h2>
 
-    <h2>Leagues</h2>
-
-    <ul>
         {% for league in leagues %}
-            <li>{{ league.name }}</li>
+            <section>
+                <h3>{{ league.name }}</h3>
+
+                <form
+                    action="{{ url_for('add_bowler', league_id=loop.index0) }}"
+                    method="post"
+                >
+                    <label for="bowler-{{ loop.index0 }}">Bowler name:</label>
+
+                    <input
+                        type="text"
+                        id="bowler-{{ loop.index0 }}"
+                        name="name"
+                        required
+                    >
+
+                    <button type="submit">Add Bowler</button>
+                </form>
+
+                <ul>
+                    {% for bowler in league.bowlers.values() %}
+                        <li>{{ bowler.name }}</li>
+                    {% else %}
+                        <li>No bowlers added yet.</li>
+                    {% endfor %}
+                </ul>
+            </section>
         {% else %}
-            <li>No leagues added yet.</li>
+            <p>No leagues added yet.</p>
         {% endfor %}
-    </ul>
-</body>
+    </body>
 </html>

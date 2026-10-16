@@ -25,6 +25,27 @@ def index():
 
     return render_template("index.html", leagues=leagues, error=error)
 
+@app.route("/add-bowler/<int:league_id>", methods=["POST"])
+def add_bowler(league_id):
+    if not 0 <= league_id < len(leagues):
+        return render_template(
+            "index.html",
+            leagues=leagues,
+            error="League not found."
+        )
+
+    try:
+        name = request.form.get("name", "")
+        leagues[league_id].add_bowler(name)
+
+    except ValueError as message:
+        return render_template(
+            "index.html",
+            leagues=leagues,
+            error=str(message)
+        )
+
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run()
