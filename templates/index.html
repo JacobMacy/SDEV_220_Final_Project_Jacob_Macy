@@ -1,55 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Bowling League Tracker</title>
-    </head>
-    <body>
-        <h1>Bowling League Tracker</h1>
+<head>
+    <meta charset="UTF-8">
+    <title>Bowling League Tracker</title>
+</head>
+<body>
+    <h1>Bowling League Tracker</h1>
 
-        <h2>Add a League</h2>
+    <h2>Add a League</h2>
 
-        <form action="{{ url_for('index') }}" method="post">
-            <label for="league-name">League name:</label>
-            <input type="text" id="league-name" name="name" required>
-            <button type="submit">Add League</button>
-        </form>
+    <form action="{{ url_for('index') }}" method="post">
+        <label for="league-name">League name:</label>
+        <input type="text" id="league-name" name="name" required>
+        <button type="submit">Add League</button>
+    </form>
 
-        {% if error %}
-            <p role="alert">{{ error }}</p>
-        {% endif %}
-        <h2>Leagues</h2>
+    {% if error %}
+        <p role="alert">{{ error }}</p>
+    {% endif %}
 
-        {% for league in leagues %}
-            <section>
-                <h3>{{ league.name }}</h3>
+    <h2>Leagues</h2>
 
-                <form
-                    action="{{ url_for('add_bowler', league_id=loop.index0) }}"
-                    method="post"
+    {% for league in leagues %}
+        {% set league_id = loop.index0 %}
+
+        <section>
+            <h3>{{ league.name }}</h3>
+
+            <form
+                action="{{ url_for('add_bowler', league_id=league_id) }}"
+                method="post"
+            >
+                <label for="bowler-{{ league_id }}">Bowler name:</label>
+                <input
+                    type="text"
+                    id="bowler-{{ league_id }}"
+                    name="name"
+                    required
                 >
-                    <label for="bowler-{{ loop.index0 }}">Bowler name:</label>
+                <button type="submit">Add Bowler</button>
+            </form>
 
-                    <input
-                        type="text"
-                        id="bowler-{{ loop.index0 }}"
-                        name="name"
-                        required
+            {% for bowler_id, bowler in league.bowlers.items() %}
+                <article>
+                    <h4>{{ bowler.name }}</h4>
+
+                    <p>
+                        Games played: {{ bowler.games | length }}
+                        | Average: {{ "%.2f" | format(bowler.average()) }}
+                    </p>
+
+                    <form
+                        action="{{ url_for('add_game',
+                            league_id=league_id, bowler_id=bowler_id) }}"
+                        method="post"
                     >
+                        <label for="score-{{ league_id }}-{{ bowler_id }}">
+                            Game score:
+                        </label>
 
-                    <button type="submit">Add Bowler</button>
-                </form>
+                        <input
+                            type="number"
+                            id="score-{{ league_id }}-{{ bowler_id }}"
+                            name="score"
+                            min="0"
+                            max="300"
+                            step="1"
+                            required
+                        >
 
-                <ul>
-                    {% for bowler in league.bowlers.values() %}
-                        <li>{{ bowler.name }}</li>
-                    {% else %}
-                        <li>No bowlers added yet.</li>
-                    {% endfor %}
-                </ul>
-            </section>
-        {% else %}
-            <p>No leagues added yet.</p>
-        {% endfor %}
-    </body>
+                        <button type="submit">Add Game</button>
+                    </form>
+
+                    <ul>
+                        {% for game in bowler.games %}
+                            <li>Game {{ loop.index }}: {{ game.score }}</li>
+                        {% else %}
+                            <li>No games recorded.</li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            {% else %}
+                <p>No bowlers added yet.</p>
+            {% endfor %}
+        </section>
+    {% else %}
+        <p>No leagues added yet.</p>
+    {% endfor %}
+</body>
 </html>

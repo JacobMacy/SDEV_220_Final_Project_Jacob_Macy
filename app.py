@@ -47,5 +47,27 @@ def add_bowler(league_id):
 
     return redirect(url_for("index"))
 
+@app.route("/add-game/<int:league_id>/<int:bowler_id>", methods=["POST"])
+def add_game(league_id, bowler_id):
+    error = ""
+
+    if not 0 <= league_id < len(leagues):
+        error = "League not found."
+    else:
+        bowler = leagues[league_id].bowlers.get(bowler_id)
+
+        if bowler is None:
+            error = "Bowler not found."
+        else:
+            try:
+                score = int(request.form.get("score", ""))
+                bowler.add_game(score)
+                return redirect(url_for("index"))
+
+            except ValueError:
+                error = "Score must be a whole number from 0 to 300."
+
+    return render_template("index.html", leagues=leagues, error=error)
+
 if __name__ == "__main__":
     app.run()
