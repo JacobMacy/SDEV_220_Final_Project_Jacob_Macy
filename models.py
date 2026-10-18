@@ -1,5 +1,6 @@
 #Classes for the bowling score and league tracker
 
+#Creates each game, stored individually within each bowler
 class Game:
     
     def __init__(self, score):
@@ -7,6 +8,7 @@ class Game:
             raise ValueError("Score must be a whole number from 0 to 300")
         self.score = score
 
+#Creates each bowlers, storing name values as well as games
 class Bowler:
 
     def __init__(self, name):
@@ -24,6 +26,7 @@ class Bowler:
             return 0.0
         return sum(game.score for game in self.games) / len(self.games)
 
+#Creates each league, which stores bowlers as well as their games
 class League:
 
     def __init__(self, name):

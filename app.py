@@ -5,7 +5,6 @@ app = Flask(__name__)
 
 leagues = []
 
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     error = ""
@@ -63,7 +62,7 @@ def add_game(league_id, bowler_id):
                 score = int(request.form.get("score", ""))
                 bowler.add_game(score)
                 return redirect(url_for("index"))
-
+            #This only allows valid bowling scores to be entered
             except ValueError:
                 error = "Score must be a whole number from 0 to 300."
 
